@@ -7,8 +7,11 @@ import NavItems from "./NavItems";
 import MobileNav from "./MobileNav";
 import Link from "next/link";
 
+type NavBarProps = {
+  isStaff?: boolean;
+};
 
-export default function NavBar() {
+export default function NavBar({ isStaff }: NavBarProps) {
   return (
     <header className="w-full border-b relative">
       <div className="max-w-7xl lg:mx-auto p-5 md:px-10 xl:px-0 w-full flex items-center justify-between relative">
@@ -20,12 +23,12 @@ export default function NavBar() {
 
        {/* Center - Nav */}
         <div className="hidden md:flex items-center">
-          <NavItems />
+          <NavItems isStaff={isStaff}/>
         </div>
 
         {/* Mobile Nav trigger */}
         <div className="flex items-center md:hidden"> {/* <-- ADD THIS WRAPPER */}
-          <MobileNav />
+          <MobileNav isStaff={isStaff}/>
         </div>
 
         {/* Right - Auth / User */}

@@ -5,17 +5,20 @@ export const headerLinks = [
   {
     label: "Home",
     route: "/",
-  },{
+  },
+  {
     label: "Events",
     route: "/events",
   },
   {
     label: "Create Event",
     route: "/events/create",
+    adminOnly: true,
   },
   {
     label: "Manage Events",
     route: "/events/manage",
+    adminOnly: true,
   },
   {
     label: "MyEvents",
@@ -23,7 +26,13 @@ export const headerLinks = [
   },
 ];
 
-const NavItems = ({ variant = "desktop" }: { variant?: "desktop" | "mobile" }) => {
+const NavItems = ({
+  variant = "desktop",
+  isStaff = false,
+}: {
+  variant?: "desktop" | "mobile";
+  isStaff?: boolean;
+}) => {
   const isMobile = variant === "mobile";
 
   const classNames = isMobile
@@ -32,14 +41,16 @@ const NavItems = ({ variant = "desktop" }: { variant?: "desktop" | "mobile" }) =
 
   return (
     <ul className={classNames}>
-      {headerLinks.map((link) => (
-        <li
-          key={link.route}
-          className="text-gray-900 flex items-center justify-center p-medium-16 whitespace-nowrap"
-        >
-          <Link href={link.route}>{link.label}</Link>
-        </li>
-      ))}
+      {headerLinks
+        .filter((link) => !link.adminOnly || isStaff)
+        .map((link) => (
+          <li
+            key={link.route}
+            className="text-gray-900 flex items-center justify-center p-medium-16 whitespace-nowrap"
+          >
+            <Link href={link.route}>{link.label}</Link>
+          </li>
+        ))}
     </ul>
   );
 };

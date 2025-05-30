@@ -1,9 +1,17 @@
-import React from 'react'
+import { getCurrentUser } from "@/db/getCurrentUser";
+import { redirect } from "next/navigation";
+import React from "react";
 
-export default function Profile() {
+export default async function Profile() {
+  const user = await getCurrentUser();
+
+  if (!user) {
+    redirect("/");
+  }
+
   return (
     <div>
       Here are your specific events
     </div>
-  )
+  );
 }
