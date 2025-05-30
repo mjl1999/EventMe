@@ -13,7 +13,10 @@ export default function NavBar() {
     <header className="w-full border-b relative">
       <div className="max-w-7xl lg:mx-auto p-5 md:px-10 xl:px-0 w-full flex items-center justify-between relative">
         {/* Left - Logo */}
-        <div className="flex-shrink-0 ml-2.5 z-10">EventMe</div>
+        <Link href="/" className="text-xl font-bold flex-shrink-0 ml-2.5 z-10">
+            EventMe
+          </Link>
+        {/* <div className="flex-shrink-0 ml-2.5 z-10">EventMe</div> */}
 
        {/* Center - Nav */}
         <div className="hidden md:flex items-center">

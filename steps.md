@@ -83,3 +83,48 @@ wrap your app with the ClerkProvider in the layout.tsx file like so:
 Now go to your Clerk dashboard and create a new application.
 
 Once you have created the application, create a .env file, and then go to the clerk settings tab and copy the API keys into it
+
+Now further down you can see the code for sign in and sign out components.
+
+You will want the following components
+
+- Navbar.tsx
+- MobileNav.tsx
+- NavItems.tsx
+- AuthButtons.tsx
+  and you will want to install sheet and separator components from shadcn/ui
+
+# setting up the prisma database
+
+npx prisma init
+
+create the database in postgres
+
+fill out the database URL in the .env file like so
+
+then fill out the schema.prisma file like so:
+
+then run npx prisma generate (this will generate the prisma client)
+
+go to db folder and in db.ts add the client like so:
+
+    import { PrismaClient } from "@prisma/client";
+
+    const globalForPrisma = global as unknown as { prisma: PrismaClient };
+
+    export const prisma =
+    globalForPrisma.prisma || new PrismaClient();
+
+    if (process.env.NODE_ENV !== "production") globalForPrisma.prisma = prisma
+
+the above code will make sure that the prisma client is only created once in development mode, and reused in production mode. It will handle all client requests efficiently.
+
+then run npx prisma db push (this will create the database tables)
+
+then run npx prisma studio (this will open the prisma studio in your browser)
+
+# Syncing user data from clerk into Database with webhooks
+
+https://clerk.com/docs/webhooks/sync-data
+
+# setting up the seed script

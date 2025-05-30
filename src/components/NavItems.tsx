@@ -18,7 +18,7 @@ export const headerLinks = [
     route: "/manage-events",
   },
   {
-    label: "MyEventMe",
+    label: "MyEvents",
     route: "/profile",
   },
 ];
