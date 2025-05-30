@@ -7,6 +7,16 @@ export default function UserGreeting() {
 
   if (!isSignedIn) return null;
 
-  return <h2 className="font-bold text-[40px] leading-[48px] lg:text-[48px] lg:leading-[60px] xl:text-[58px] xl:leading-[74px] text-center">Hello {user?.username || user?.firstName || "User"}!</h2>;
+  const name =
+    user?.firstName ||
+    user?.username ||
+    user?.emailAddresses?.[0]?.emailAddress ||
+    "User";
+
+  return (
+    <h2 className="font-bold text-[40px] leading-[48px] lg:text-[48px] lg:leading-[60px] xl:text-[58px] xl:leading-[74px] text-center">
+      Hello, {name}!
+    </h2>
+  );
 }
 
