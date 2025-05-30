@@ -15,16 +15,15 @@ datasource db {
 
 
 model User {
-  id             String @id @default(cuid())
-  email          String   @unique
-  FirstName     String
-  LastName      String
-  passwordHash   String   // store hashed passwords
-  isStaff        Boolean  @default(false)
-  createdAt      DateTime @default(now())
-  updatedAt      DateTime @updatedAt
-  signups        Signup[]
-  
+  id         String   @id            // This will be Clerk's user ID
+  email      String   @unique
+  username String?
+  firstName  String?
+  lastName   String?
+  isStaff    Boolean  @default(false)
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+  signups    Signup[]
 }
 
 model Event {
@@ -34,6 +33,7 @@ model Event {
   location       String
   date           DateTime
   capacity       Int?
+  eventImageUrl String?
   createdAt      DateTime @default(now())
   updatedAt      DateTime @updatedAt
   signups        Signup[]

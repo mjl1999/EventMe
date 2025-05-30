@@ -1,13 +1,18 @@
 import { Button } from "@/components/ui/button";
+import { prisma } from "@/db/db";
 import Image from "next/image";
 import Link from "next/link";
+import UserGreeting from "@/components/UserGreeting";
 
-export default function Home() {
 
+export default async function Home() {
+  // const user = await prisma.user.findMany()
   return (
+    
     <>
       <section className="bg-primary-50 bg-dotted-pattern bg-contain min-h-screen flex items-center justify-center py-5 md:py-10">
         <div className="max-w-7xl w-full p-5 md:px-10 xl:px-0 flex flex-col items-center justify-center gap-8">
+           <UserGreeting />
           <h1 className="font-bold text-[40px] leading-[48px] lg:text-[48px] lg:leading-[60px] xl:text-[58px] xl:leading-[74px] text-center">
             Click, Connect, Community: Our Events, Your Experiences!
           </h1>
