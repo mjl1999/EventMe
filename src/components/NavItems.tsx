@@ -11,11 +11,11 @@ export const headerLinks = [
   },
   {
     label: "Create Event",
-    route: "/create-event",
+    route: "/events/create",
   },
   {
     label: "Manage Events",
-    route: "/manage-events",
+    route: "/events/manage",
   },
   {
     label: "MyEvents",

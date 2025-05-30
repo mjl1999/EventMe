@@ -17,7 +17,7 @@ export default async function Home() {
             Click, Connect, Community: Our Events, Your Experiences!
           </h1>
           <p className="font-normal tracking-[2%] text-[20px] leading-[30px] md:text-[24px] md:leading-[36px] text-center">
-            Enjoy Some of the Best Events the Local Community has to Offer!
+            Enjoy Some of the Best Events the Local Community Has to Offer!
           </p>
           <Button size="lg" asChild className="button w-full sm:w-fit mx-auto">
             <Link href="/events">Explore Events</Link>
