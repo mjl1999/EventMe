@@ -21,7 +21,7 @@ export default function EventsPage() {
             </div>
 
             <h2 className="text-xl font-semibold">{event.title}</h2>
-            <p className="text-sm text-gray-500">By {event.author} · {event.topic}</p>
+            <p className="text-sm text-gray-500">By {event.author} · {event.category}</p>
             <p className="text-sm text-gray-400 mb-2">
               {new Date(event.created_at).toLocaleDateString()}
             </p>
