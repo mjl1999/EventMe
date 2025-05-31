@@ -15,7 +15,7 @@ export default function EventsPage() {
           >
             <div className="relative w-full h-48 mb-4">
               <img
-                src={event.article_img_url}
+                src={event.eventImageUrl}
                 alt={event.title}
                 className="w-full h-48 object-cover mb-4 rounded"
               />
@@ -26,7 +26,7 @@ export default function EventsPage() {
               By {event.author} · {event.category}
             </p>
             <p className="text-sm text-gray-400 mb-2">
-              {new Date(event.created_at).toLocaleDateString()}
+              {new Date(event.createdAt).toLocaleDateString()}
             </p>
             <p className="text-gray-700">
               {event.body.length > 100
