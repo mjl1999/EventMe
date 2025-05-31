@@ -1,9 +1,11 @@
 import { Button } from "@/components/ui/button";
+import { prisma } from "@/db/db";
 import { eventsInfo } from "@/db/events-info";
 import Image from "next/image";
 import Link from "next/link";
 
-export default function EventsPage() {
+export default async function EventsPage() {
+  const events = await prisma.event.findMany();
   return (
     <main className="px-6 py-8">
       <h1 className="text-3xl font-bold mb-6 text-center">All Events</h1>
