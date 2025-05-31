@@ -6,7 +6,7 @@ export default async function Profile() {
   const user = await getCurrentUser();
 
   if (!user) {
-    redirect("/");
+    redirect("/prompt-signup");
   }
 
   return (

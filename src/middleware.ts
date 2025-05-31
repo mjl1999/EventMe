@@ -13,9 +13,10 @@ export const config = {
     // Define which routes are public and don't need authentication
     "/", // homepage
     "/api/webhook/clerk",
+    "/events",
     "/api/webhook/stripe",
     "/events/:id", // This will include routes like /events/1, /events/abc, etc.
     "/about",     // Another example of a public route
-    "/contact",   // Another example of a public route
+    "/contact",  // Another example of a public route
   ],
 };
