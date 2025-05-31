@@ -1,5 +1,5 @@
 import { PrismaClient } from "@prisma/client";
-import { eventsInfo } from "./events-info";
+import { eventsInfo } from "@/db/events-info";
 const prisma = new PrismaClient();
 
 
@@ -13,7 +13,7 @@ async function main() {
         slug: event.slug,
         category: event.category,
         organiser: event.author,
-        body: event.body,
+        description: event.body,
         createdAt: event.createdAt, // or new Date(event.createdAt) if needed
         date: event.date,
         location: event.location,
