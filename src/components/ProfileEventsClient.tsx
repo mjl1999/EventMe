@@ -1,6 +1,7 @@
 "use client";
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
+import RemoveEventButton from "@/components/RemoveSignUpButton";
 import Link from "next/link";
 
 const CATEGORIES = ["all", "cooking", "coding", "football"];
@@ -93,6 +94,7 @@ export default function ProfileEventsClient({ events }: { events: any[] }) {
                   See more
                 </Link>
               </Button>
+              <RemoveEventButton eventId={event.id} />
             </div>
           ))}
         </div>
