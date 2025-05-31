@@ -1,5 +1,5 @@
 import { PrismaClient } from "@prisma/client";
-import { eventsInfo } from "@/db/events-info";
+import { eventsInfo } from "../src/db/events-info";
 const prisma = new PrismaClient();
 
 
