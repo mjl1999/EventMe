@@ -1,5 +1,6 @@
 import { Button } from "@/components/ui/button";
-import { CalendarRange, Users, User, Tag } from "lucide-react";
+import SignUpButton from "@/components/SignUpButton";
+import { CalendarRange, Users, User, Tag, MapPin } from "lucide-react";
 import Link from "next/link";
 import React from "react";
 import { getCurrentUser } from "@/db/getCurrentUser";
@@ -22,6 +23,10 @@ export default async function EventPage(props: { params: { slug: string } }) {
   if (!event) {
     notFound();
   }
+
+  const alreadySignedUp = await prisma.signup.findFirst({
+  where: { userId: user.id, eventId: event.id },
+});
 
   // Format date as dd/mm/yyyy
   const formatDate = (date: string | Date) => {
@@ -63,6 +68,9 @@ export default async function EventPage(props: { params: { slug: string } }) {
               <Users className="size-4" /> Capacity: {event.capacity ?? "Unlimited"}
             </span>
             <span className="flex items-center gap-1">
+  <MapPin className="size-4" /> {event.location}
+</span>
+            <span className="flex items-center gap-1">
               Created: {formatDate(event.createdAt)}
             </span>
           </div>
@@ -76,16 +84,14 @@ export default async function EventPage(props: { params: { slug: string } }) {
 
         {/* Actions */}
         <div className="flex flex-col sm:flex-row gap-4 mt-6">
-          <Button size="lg" asChild className="w-full sm:w-fit">
-            <Link href="#">Sign Up To Event</Link>
-          </Button>
-          <Button size="lg" asChild variant="outline" className="w-full sm:w-fit">
-            <Link href="#">Add to Google Calendar</Link>
-          </Button>
-          <Button size="lg" asChild variant="ghost" className="w-full sm:w-fit">
-            <Link href="/events">Back to Events</Link>
-          </Button>
-        </div>
+      <SignUpButton eventId={event.id} alreadySignedUp={!!alreadySignedUp} />
+      <Button size="lg" asChild variant="outline" className="w-full sm:w-fit">
+        <Link href="#">Add to Google Calendar</Link>
+      </Button>
+      <Button size="lg" asChild variant="ghost" className="w-full sm:w-fit">
+        <Link href="/events">Back to Events</Link>
+      </Button>
+    </div>
       </div>
     </main>
   );
