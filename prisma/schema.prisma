@@ -29,6 +29,7 @@ model User {
 model Event {
   id             String      @id @default(cuid())
   title          String
+  slug           String      @unique
   description    String
   location       String
   date           DateTime
