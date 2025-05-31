@@ -9,7 +9,6 @@ export interface EventInfo {
   capacity: number;
   body: string;
   eventImageUrl: string;
-  votes?: number; // Optional, since not all objects have it
 }
 
 export const eventsInfo: EventInfo[] = [

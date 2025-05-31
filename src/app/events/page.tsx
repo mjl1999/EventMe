@@ -33,9 +33,9 @@ export default function EventsPage() {
                 ? event.body.slice(0, 100) + "..."
                 : event.body}
             </p>
-            {event.votes !== undefined && (
-              <p className="text-sm text-blue-500 mt-2">
-                👍 {event.votes} votes
+            {event.capacity !== undefined && (
+              <p className="inline-block bg-blue-100 text-blue-700 text-xs font-semibold px-3 py-1 rounded-full mt-2 w-fit">
+                Capacity: {event.capacity}
               </p>
             )}
             {/* The link below uses the event title to route to the individual event page */}
