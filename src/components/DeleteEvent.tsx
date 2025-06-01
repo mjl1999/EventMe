@@ -27,7 +27,7 @@ export default function DeleteEvent({ event, user }: { event: any, user: any }) 
   }
 
   if (!user?.isStaff || event.isSeeded) return null;
-  console.log("event.isSeeded:", event.isSeeded);
+  
 
   return (
     <>
