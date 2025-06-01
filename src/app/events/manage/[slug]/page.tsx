@@ -11,7 +11,7 @@ export default async function ManageEvent() {
 
   return (
     <div>
-      Select and update events
+      Update Event (Admin only)
     </div>
   );
 }

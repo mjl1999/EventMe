@@ -16,11 +16,6 @@ export const headerLinks = [
     adminOnly: true,
   },
   {
-    label: "Manage Events",
-    route: "/events/manage",
-    adminOnly: true,
-  },
-  {
     label: "MyEvents",
     route: "/profile",
   },

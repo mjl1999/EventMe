@@ -3,9 +3,11 @@ import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
 
+
+
 const CATEGORIES = ["all", "cooking", "coding", "football"];
 
-export default function EventsClient({ events }: { events: any[] }) {
+export default function EventsClient({ events, user }: { events: any[], user?: { isStaff?: boolean } }, ) {
   const [selectedCategory, setSelectedCategory] = useState("all");
 
   const filteredEvents =
@@ -71,18 +73,39 @@ export default function EventsClient({ events }: { events: any[] }) {
                 Capacity: {event.capacity}
               </p>
             )}
-            <Button
-              size="lg"
-              asChild
-              className="mt-4 button w-full sm:w-fit mx-auto"
-            >
-              <Link
-                href={`/events/${encodeURIComponent(event.slug)}`}
-                className="text-blue-600 hover:underline text-sm"
+            <div className="flex gap-2 mt-4 w-full sm:w-fit mx-auto">
+              <Button
+                size="lg"
+                asChild
+                className="button"
               >
-                See more
-              </Link>
-            </Button>
+                <Link
+                  href={`/events/${encodeURIComponent(event.slug)}`}
+                  className="text-blue-600 hover:underline text-sm"
+                >
+                  See more
+                </Link>
+              </Button>
+              {user?.isStaff && (
+                <Button
+                  size="lg"
+                  asChild
+                  className="px-4 border-2 border-blue-600 text-blue-600 hover:bg-blue-50 transition-colors"
+                  variant="outline"
+                >
+                  <Link
+                    href={`/events/manage/${encodeURIComponent(event.slug)}`}
+                    className="flex items-center gap-2"
+                  >
+                   
+                    <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15.232 5.232l3.536 3.536M16.5 3.5a2.121 2.121 0 113 3L7 19.5H3v-4L16.5 3.5z" />
+</svg>
+                    Update Event
+                  </Link>
+                </Button>
+              )}
+            </div>
           </div>
         ))}
       </div>
