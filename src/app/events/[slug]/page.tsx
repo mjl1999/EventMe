@@ -10,7 +10,7 @@ import { prisma } from "@/db/db";
 export default async function EventPage(props: { params: { slug: string } }) {
   const { slug } = await props.params;
   const user = await getCurrentUser();
-  
+
   if (!user) {
     redirect("/prompt-signup");
   }
@@ -26,33 +26,43 @@ export default async function EventPage(props: { params: { slug: string } }) {
   }
 
   const alreadySignedUp = await prisma.signup.findFirst({
-  where: { userId: user.id, eventId: event.id },
-});
+    where: { userId: user.id, eventId: event.id },
+  });
 
   // Format date as dd/mm/yyyy
   const formatDate = (date: string | Date) => {
-  const d = new Date(date);
-  const day = String(d.getDate()).padStart(2, "0");
-  const month = String(d.getMonth() + 1).padStart(2, "0");
-  const year = d.getFullYear();
-  return `${day}/${month}/${year}`;
-};
+    const d = new Date(date);
+    const day = String(d.getDate()).padStart(2, "0");
+    const month = String(d.getMonth() + 1).padStart(2, "0");
+    const year = d.getFullYear();
+     const hours = String(d.getHours()).padStart(2, "0");
+  const minutes = String(d.getMinutes()).padStart(2, "0");
+  return `${day}/${month}/${year} ${hours}:${minutes}`;
+  };
 
-function addOneHour(date: Date) {
-  const d = new Date(date);
-  d.setHours(d.getHours() + 1);
-  return d;
-}
-function formatGoogleDate(date: Date) {
-  // Converts a JS Date to YYYYMMDDTHHmmssZ (UTC)
-  const d = new Date(date);
-  return d
-    .toISOString()
-    .replace(/[-:]/g, "")
-    .replace(/\.\d{3}Z$/, "Z")
-    .slice(0, 15) + "Z";
-}
-const googleCalendarUrl = `https://calendar.google.com/calendar/render?action=TEMPLATE&text=${encodeURIComponent(event.title)}&dates=${formatGoogleDate(event.date)}/${formatGoogleDate(addOneHour(event.date))}&details=${encodeURIComponent(event.description)}&location=${encodeURIComponent(event.location)}`;
+  function addOneHour(date: Date) {
+    const d = new Date(date);
+    d.setHours(d.getHours() + 1);
+    return d;
+  }
+  function formatGoogleDate(date: Date) {
+    // Converts a JS Date to YYYYMMDDTHHmmssZ (UTC)
+    const d = new Date(date);
+    return (
+      d
+        .toISOString()
+        .replace(/[-:]/g, "")
+        .replace(/\.\d{3}Z$/, "Z")
+        .slice(0, 15) + "Z"
+    );
+  }
+  const googleCalendarUrl = `https://calendar.google.com/calendar/render?action=TEMPLATE&text=${encodeURIComponent(
+    event.title
+  )}&dates=${formatGoogleDate(event.date)}/${formatGoogleDate(
+    addOneHour(event.date)
+  )}&details=${encodeURIComponent(
+    event.description
+  )}&location=${encodeURIComponent(event.location)}`;
 
   return (
     <main className="max-w-3xl mx-auto px-4 py-10">
@@ -60,12 +70,12 @@ const googleCalendarUrl = `https://calendar.google.com/calendar/render?action=TE
         {/* Event Image */}
         {event.eventImageUrl && (
           <div className="w-full h-64 relative rounded-xl overflow-hidden mb-4">
-           {event.eventImageUrl && event.eventImageUrl !== "" && ( 
-            <img
-              src={event.eventImageUrl}
-              alt={event.title}
-              className="object-cover w-full h-full"
-            />
+            {event.eventImageUrl && event.eventImageUrl !== "" && (
+              <img
+                src={event.eventImageUrl}
+                alt={event.title}
+                className="object-cover w-full h-full"
+              />
             )}
           </div>
         )}
@@ -84,11 +94,12 @@ const googleCalendarUrl = `https://calendar.google.com/calendar/render?action=TE
               <CalendarRange className="size-4" /> {formatDate(event.date)}
             </span>
             <span className="flex items-center gap-1">
-              <Users className="size-4" /> Capacity: {event.capacity ?? "Unlimited"}
+              <Users className="size-4" /> Capacity:{" "}
+              {event.capacity ?? "Unlimited"}
             </span>
             <span className="flex items-center gap-1">
-  <MapPin className="size-4" /> {event.location}
-</span>
+              <MapPin className="size-4" /> {event.location}
+            </span>
             <span className="flex items-center gap-1">
               Created: {formatDate(event.createdAt)}
             </span>
@@ -98,21 +109,35 @@ const googleCalendarUrl = `https://calendar.google.com/calendar/render?action=TE
         {/* Description */}
         <div>
           <h2 className="text-xl font-semibold mb-2">About this event</h2>
-          <p className="text-gray-700 leading-relaxed whitespace-pre-line">{event.description}</p>
+          <p className="text-gray-700 leading-relaxed whitespace-pre-line">
+            {event.description}
+          </p>
         </div>
 
         {/* Actions */}
         <div className="flex flex-col sm:flex-row gap-4 mt-6">
-      <SignUpButton eventId={event.id} alreadySignedUp={!!alreadySignedUp} />
-      <Button size="lg" asChild variant="outline" className="w-full sm:w-fit">
-  <a href={googleCalendarUrl} target="_blank" rel="noopener noreferrer">
-    Add to Google Calendar
-  </a>
-</Button>
-      <Button size="lg" asChild variant="ghost" className="w-full sm:w-fit">
-        <Link href="/events">Back to Events</Link>
-      </Button>
-    </div>
+          <SignUpButton
+            eventId={event.id}
+            alreadySignedUp={!!alreadySignedUp}
+          />
+          <Button
+            size="lg"
+            asChild
+            variant="outline"
+            className="w-full sm:w-fit"
+          >
+            <a
+              href={googleCalendarUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              Add to Google Calendar
+            </a>
+          </Button>
+          <Button size="lg" asChild variant="ghost" className="w-full sm:w-fit">
+            <Link href="/events">Back to Events</Link>
+          </Button>
+        </div>
       </div>
     </main>
   );
