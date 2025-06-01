@@ -36,9 +36,9 @@ export default async function EventPage(props: { params: { slug: string } }) {
     const day = String(d.getDate()).padStart(2, "0");
     const month = String(d.getMonth() + 1).padStart(2, "0");
     const year = d.getFullYear();
-     const hours = String(d.getHours()).padStart(2, "0");
-  const minutes = String(d.getMinutes()).padStart(2, "0");
-  return `${day}/${month}/${year} ${hours}:${minutes}`;
+    const hours = String(d.getHours()).padStart(2, "0");
+    const minutes = String(d.getMinutes()).padStart(2, "0");
+    return `${day}/${month}/${year} ${hours}:${minutes}`;
   };
 
   function addOneHour(date: Date) {
@@ -70,8 +70,11 @@ export default async function EventPage(props: { params: { slug: string } }) {
       <div className="bg-white rounded-2xl shadow-lg p-8 flex flex-col gap-8">
         {/* Event Image */}
         <div className="w-full h-64 relative rounded-xl overflow-hidden mb-4">
-  <EventImage src={event.eventImageUrl ?? undefined} alt={event.title} />
-</div>
+          <EventImage
+            src={event.eventImageUrl ?? undefined}
+            alt={event.title}
+          />
+        </div>
 
         {/* Title & Meta */}
         <div className="flex flex-col gap-2">
