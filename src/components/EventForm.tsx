@@ -22,7 +22,13 @@ import { checkEventTitle } from "@/app/actions/checkEventTitle";
 const eventSchema = z.object({
   title: z.string().min(1, "Title is required"),
   description: z.string().min(1, "Description is required"),
-  location: z.string().min(1, "Location is required"),
+  location: z
+  .string()
+  .min(1, "Location is required")
+  .regex(
+    /^.+,\s*[A-Z]{1,2}\d{1,2}\s*\d?[A-Z]{0,2}\s*\d[A-Z]{2}$/i,
+    "Location must be in the format: Place Name, POSTCODE"
+  ),
   date: z.string()
   .min(1, "Date is required")
   .refine(
@@ -37,11 +43,17 @@ const eventSchema = z.object({
     errorMap: () => ({ message: "Category must be cooking, coding, or football" }),
   }),
   organiser: z.string().min(1, "Organiser is required"),
-  capacity: z
-  .number()
-  .min(1, "Capacity must be at least 1")
-  .optional(),
-  eventImageUrl: z.string().url("Invalid URL").optional(),
+ capacity: z.preprocess(
+  (val) =>
+    val === "" ||
+    val === null ||
+    typeof val === "undefined" ||
+    (typeof val === "number" && isNaN(val))
+      ? undefined
+      : Number(val),
+  z.number().min(1, "Capacity must be at least 1").optional()
+),
+  eventImageUrl: z.string().url("Invalid URL").or(z.literal("")).optional(),
 });
 
 function generateSlug(title: string) {
@@ -112,12 +124,24 @@ export function EventForm() {
         </p>
       )}
       <Input type="text" {...form.register("title")} placeholder="Title" />
-      <Textarea {...form.register("description")} placeholder="Description" />
+     <Textarea
+  {...form.register("description")}
+  placeholder="Description"
+  className="h-32 resize-none overflow-y-auto"
+  maxLength={2000}
+  
+/>
+<p className="text-sm text-gray-500">
+  {form.watch("description")?.length || 0}/2000 characters
+</p>
       <Input
-        type="text"
-        {...form.register("location")}
-        placeholder="Location"
-      />
+  type="text"
+  {...form.register("location")}
+  placeholder="e.g. Coventry Central Library, CV1 1FY"
+/>
+{form.formState.errors.location && (
+  <p className="text-red-500">{form.formState.errors.location.message}</p>
+)}
       <Input
   type="datetime-local"
   {...form.register("date")}

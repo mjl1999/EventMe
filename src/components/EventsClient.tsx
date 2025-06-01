@@ -40,11 +40,13 @@ export default function EventsClient({ events }: { events: any[] }) {
             className="flex flex-col justify-between bg-white rounded-2xl shadow p-4 hover:shadow-lg transition duration-200"
           >
             <div className="relative w-full h-48 mb-4">
+              {event.eventImageUrl && event.eventImageUrl !== "" && (
               <img
                 src={event.eventImageUrl ?? ""}
                 alt={event.title}
                 className="w-full h-48 object-cover mb-4 rounded"
               />
+              )}
             </div>
             <h2 className="text-xl font-semibold">{event.title}</h2>
             <p className="text-sm text-gray-500">

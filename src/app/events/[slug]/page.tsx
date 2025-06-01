@@ -43,11 +43,13 @@ export default async function EventPage(props: { params: { slug: string } }) {
         {/* Event Image */}
         {event.eventImageUrl && (
           <div className="w-full h-64 relative rounded-xl overflow-hidden mb-4">
+           {event.eventImageUrl && event.eventImageUrl !== "" && ( 
             <img
               src={event.eventImageUrl}
               alt={event.title}
               className="object-cover w-full h-full"
             />
+            )}
           </div>
         )}
 
