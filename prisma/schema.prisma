@@ -44,9 +44,9 @@ model Event {
 
 model Signup {
   id         Int      @id @default(autoincrement())
-  user       User     @relation(fields: [userId], references: [id])
+  user       User     @relation(fields: [userId], references: [id], onDelete: Cascade)
   userId     String
-  event      Event    @relation(fields: [eventId], references: [id])
+  event      Event    @relation(fields: [eventId], references: [id], onDelete: Cascade)
   eventId    String
   createdAt  DateTime @default(now())
 
