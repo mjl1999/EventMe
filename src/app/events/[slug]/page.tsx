@@ -7,6 +7,7 @@ import { getCurrentUser } from "@/db/getCurrentUser";
 import { redirect, notFound } from "next/navigation";
 import { prisma } from "@/db/db";
 import EventImage from "@/components/EventImage";
+import DeleteEvent from "@/components/DeleteEvent";
 
 export default async function EventPage(props: { params: { slug: string } }) {
   const { slug } = await props.params;
@@ -133,6 +134,7 @@ export default async function EventPage(props: { params: { slug: string } }) {
           <Button size="lg" asChild variant="ghost" className="w-full sm:w-fit">
             <Link href="/events">Back to Events</Link>
           </Button>
+          <DeleteEvent event={event} user={user} />
         </div>
       </div>
     </main>
