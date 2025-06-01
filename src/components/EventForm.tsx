@@ -190,6 +190,7 @@ export function EventForm() {
   type="text"
   {...form.register("eventImageUrl")}
   placeholder="Event Image URL (optional)"
+  
 />
 {form.formState.errors.eventImageUrl && (
   <p className="text-red-500">

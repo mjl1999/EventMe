@@ -2,13 +2,19 @@
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
-
-
+import { Users } from "lucide-react";
 
 const CATEGORIES = ["all", "cooking", "coding", "football"];
 
-export default function EventsClient({ events, user }: { events: any[], user?: { isStaff?: boolean } }, ) {
+export default function EventsClient({
+  events,
+  user,
+}: {
+  events: any[];
+  user?: { isStaff?: boolean };
+}) {
   const [selectedCategory, setSelectedCategory] = useState("all");
+  const [imgErrors, setImgErrors] = useState<{ [slug: string]: boolean }>({});
 
   const filteredEvents =
     selectedCategory === "all"
@@ -33,7 +39,10 @@ export default function EventsClient({ events, user }: { events: any[], user?: {
       <h1 className="text-3xl font-bold mb-6 text-center">
         {selectedCategory === "all"
           ? "All Events"
-          : `${selectedCategory.charAt(0).toUpperCase() + selectedCategory.slice(1)} Events`}
+          : `${
+              selectedCategory.charAt(0).toUpperCase() +
+              selectedCategory.slice(1)
+            } Events`}
       </h1>
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
         {filteredEvents.map((event) => (
@@ -41,13 +50,18 @@ export default function EventsClient({ events, user }: { events: any[], user?: {
             key={event.slug}
             className="flex flex-col justify-between bg-white rounded-2xl shadow p-4 hover:shadow-lg transition duration-200"
           >
-            <div className="relative w-full h-48 mb-4">
-              {event.eventImageUrl && event.eventImageUrl !== "" && (
-              <img
-                src={event.eventImageUrl ?? ""}
-                alt={event.title}
-                className="w-full h-48 object-cover mb-4 rounded"
-              />
+            <div className="relative w-full h-48 mb-4 flex items-center justify-center bg-gray-100 rounded">
+              {!event.eventImageUrl || imgErrors[event.slug] ? (
+                <Users className="w-20 h-20 text-gray-400" />
+              ) : (
+                <img
+                  src={event.eventImageUrl}
+                  alt={event.title}
+                  className="w-full h-48 object-cover mb-4 rounded"
+                  onError={() =>
+                    setImgErrors((prev) => ({ ...prev, [event.slug]: true }))
+                  }
+                />
               )}
             </div>
             <h2 className="text-xl font-semibold">{event.title}</h2>
@@ -56,12 +70,12 @@ export default function EventsClient({ events, user }: { events: any[], user?: {
             </p>
             <p className="text-sm text-gray-400 mb-2">
               {(() => {
-    const d = new Date(event.createdAt);
-    const day = String(d.getDate()).padStart(2, "0");
-    const month = String(d.getMonth() + 1).padStart(2, "0");
-    const year = d.getFullYear();
-    return `${day}/${month}/${year}`;
-  })()}
+                const d = new Date(event.createdAt);
+                const day = String(d.getDate()).padStart(2, "0");
+                const month = String(d.getMonth() + 1).padStart(2, "0");
+                const year = d.getFullYear();
+                return `${day}/${month}/${year}`;
+              })()}
             </p>
             <p className="text-gray-700">
               {event.description.length > 100
@@ -74,11 +88,7 @@ export default function EventsClient({ events, user }: { events: any[], user?: {
               </p>
             )}
             <div className="flex gap-2 mt-4 w-full sm:w-fit mx-auto">
-              <Button
-                size="lg"
-                asChild
-                className="button"
-              >
+              <Button size="lg" asChild className="button">
                 <Link
                   href={`/events/${encodeURIComponent(event.slug)}`}
                   className="text-blue-600 hover:underline text-sm"
@@ -97,10 +107,20 @@ export default function EventsClient({ events, user }: { events: any[], user?: {
                     href={`/events/manage/${encodeURIComponent(event.slug)}`}
                     className="flex items-center gap-2"
                   >
-                   
-                    <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15.232 5.232l3.536 3.536M16.5 3.5a2.121 2.121 0 113 3L7 19.5H3v-4L16.5 3.5z" />
-</svg>
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      className="h-4 w-4"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                      stroke="currentColor"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={2}
+                        d="M15.232 5.232l3.536 3.536M16.5 3.5a2.121 2.121 0 113 3L7 19.5H3v-4L16.5 3.5z"
+                      />
+                    </svg>
                     Update Event
                   </Link>
                 </Button>

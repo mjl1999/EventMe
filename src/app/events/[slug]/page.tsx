@@ -6,6 +6,7 @@ import React from "react";
 import { getCurrentUser } from "@/db/getCurrentUser";
 import { redirect, notFound } from "next/navigation";
 import { prisma } from "@/db/db";
+import EventImage from "@/components/EventImage";
 
 export default async function EventPage(props: { params: { slug: string } }) {
   const { slug } = await props.params;
@@ -68,17 +69,9 @@ export default async function EventPage(props: { params: { slug: string } }) {
     <main className="max-w-3xl mx-auto px-4 py-10">
       <div className="bg-white rounded-2xl shadow-lg p-8 flex flex-col gap-8">
         {/* Event Image */}
-        {event.eventImageUrl && (
-          <div className="w-full h-64 relative rounded-xl overflow-hidden mb-4">
-            {event.eventImageUrl && event.eventImageUrl !== "" && (
-              <img
-                src={event.eventImageUrl}
-                alt={event.title}
-                className="object-cover w-full h-full"
-              />
-            )}
-          </div>
-        )}
+        <div className="w-full h-64 relative rounded-xl overflow-hidden mb-4">
+  <EventImage src={event.eventImageUrl ?? undefined} alt={event.title} />
+</div>
 
         {/* Title & Meta */}
         <div className="flex flex-col gap-2">
