@@ -10,6 +10,7 @@ import { prisma } from "@/db/db";
 export default async function EventPage(props: { params: { slug: string } }) {
   const { slug } = await props.params;
   const user = await getCurrentUser();
+  
   if (!user) {
     redirect("/prompt-signup");
   }
@@ -36,6 +37,16 @@ export default async function EventPage(props: { params: { slug: string } }) {
   const year = d.getFullYear();
   return `${day}/${month}/${year}`;
 };
+function formatGoogleDate(date: Date) {
+  // Converts a JS Date to YYYYMMDDTHHmmssZ (UTC)
+  const d = new Date(date);
+  return d
+    .toISOString()
+    .replace(/[-:]/g, "")
+    .replace(/\.\d{3}Z$/, "Z")
+    .slice(0, 15) + "Z";
+}
+const googleCalendarUrl = `https://calendar.google.com/calendar/render?action=TEMPLATE&text=${encodeURIComponent(event.title)}&dates=${formatGoogleDate(event.date)}/${formatGoogleDate(event.date)}&details=${encodeURIComponent(event.description)}&location=${encodeURIComponent(event.location)}`;
 
   return (
     <main className="max-w-3xl mx-auto px-4 py-10">
@@ -88,8 +99,10 @@ export default async function EventPage(props: { params: { slug: string } }) {
         <div className="flex flex-col sm:flex-row gap-4 mt-6">
       <SignUpButton eventId={event.id} alreadySignedUp={!!alreadySignedUp} />
       <Button size="lg" asChild variant="outline" className="w-full sm:w-fit">
-        <Link href="#">Add to Google Calendar</Link>
-      </Button>
+  <a href={googleCalendarUrl} target="_blank" rel="noopener noreferrer">
+    Add to Google Calendar
+  </a>
+</Button>
       <Button size="lg" asChild variant="ghost" className="w-full sm:w-fit">
         <Link href="/events">Back to Events</Link>
       </Button>
