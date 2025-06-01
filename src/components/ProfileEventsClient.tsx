@@ -1,8 +1,8 @@
 "use client";
-import { useState } from "react";
+import { useState, useTransition } from "react";
 import { Button } from "@/components/ui/button";
-import RemoveEventButton from "@/components/RemoveSignUpButton";
 import Link from "next/link";
+import { removeSignup } from "@/app/actions/removeSignup"; // Adjust the import based on your project structure
 
 const CATEGORIES = ["all", "cooking", "coding", "football"];
 
@@ -13,6 +13,9 @@ export default function ProfileEventsClient({ events }: { events: any[] }) {
     selectedCategory === "all"
       ? events
       : events.filter((event) => event.category === selectedCategory);
+
+  const [removed, setRemoved] = useState<{ [id: string]: boolean }>({});
+  const [pending, setPending] = useState<{ [id: string]: boolean }>({});
 
   return (
     <main className="px-6 py-8">
@@ -30,19 +33,20 @@ export default function ProfileEventsClient({ events }: { events: any[] }) {
       <h1 className="text-3xl font-bold mb-12 text-center">
         {selectedCategory === "all"
           ? "Your Events"
-          : `Your ${selectedCategory.charAt(0).toUpperCase() + selectedCategory.slice(1)} Events`}
+          : `Your ${
+              selectedCategory.charAt(0).toUpperCase() +
+              selectedCategory.slice(1)
+            } Events`}
       </h1>
       {filteredEvents.length === 0 ? (
         <div className="flex flex-col items-center mt-8">
           <p className="text-center text-gray-500 text-2xl mb-12">
-           {selectedCategory === "all"
-        ? "You have not signed up for any events."
-        : "You have not signed up for any events in this category."}
+            {selectedCategory === "all"
+              ? "You have not signed up for any events."
+              : "You have not signed up for any events in this category."}
           </p>
           <Button asChild size="lg">
-            <Link href="/events">
-              Browse Events
-            </Link>
+            <Link href="/events">Browse Events</Link>
           </Button>
         </div>
       ) : (
@@ -82,19 +86,27 @@ export default function ProfileEventsClient({ events }: { events: any[] }) {
                   Capacity: {event.capacity}
                 </p>
               )}
-              <Button
-                size="lg"
-                asChild
-                className="mt-6 button w-full sm:w-fit mx-auto"
-              >
-                <Link
-                  href={`/events/${encodeURIComponent(event.slug)}`}
-                  className="text-blue-600 hover:underline text-sm"
+              <div className="flex flex-row gap-4 mt-6">
+                <Button size="lg" asChild className="button px-4">
+                  <Link
+                    href={`/events/${encodeURIComponent(event.slug)}`}
+                    className="text-blue-600 hover:underline text-sm"
+                  >
+                    See more
+                  </Link>
+                </Button>
+                <Button
+                  variant="destructive"
+                  size="lg"
+                  className="button px-4 transition duration-150 ease-in-out hover:scale-105 active:scale-95 hover:bg-red-600 hover:text-white focus:ring-2 focus:ring-red-400"
+                  onClick={async () => {
+                    await removeSignup(event.id);
+                    // Optionally: refresh the page or remove the event from the UI here
+                  }}
                 >
-                  See more
-                </Link>
-              </Button>
-              <RemoveEventButton eventId={event.id} />
+                  Remove
+                </Button>
+              </div>
             </div>
           ))}
         </div>
