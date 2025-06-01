@@ -1,0 +1,194 @@
+"use client";
+
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { z } from "zod";
+import { useState } from "react";
+import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
+import { Button } from "@/components/ui/button";
+import {
+  AlertDialog,
+  AlertDialogContent,
+  AlertDialogHeader,
+  AlertDialogFooter,
+  AlertDialogTitle,
+  AlertDialogCancel,
+  AlertDialogAction,
+} from "@/components/ui/alert-dialog";
+import { createEvent } from "@/app/actions/createEvent";
+import { checkEventTitle } from "@/app/actions/checkEventTitle";
+
+const eventSchema = z.object({
+  title: z.string().min(1, "Title is required"),
+  description: z.string().min(1, "Description is required"),
+  location: z.string().min(1, "Location is required"),
+  date: z.string()
+  .min(1, "Date is required")
+  .refine(
+    (val) => !isNaN(Date.parse(val)),
+    { message: "Invalid date and time" }
+  )
+  .refine(
+    (val) => Date.parse(val) > Date.now(),
+    { message: "Date and time must be in the future" }
+  ),
+  category: z.enum(["cooking", "coding", "football"], {
+    errorMap: () => ({ message: "Category must be cooking, coding, or football" }),
+  }),
+  organiser: z.string().min(1, "Organiser is required"),
+  capacity: z
+  .number()
+  .min(1, "Capacity must be at least 1")
+  .optional(),
+  eventImageUrl: z.string().url("Invalid URL").optional(),
+});
+
+function generateSlug(title: string) {
+  return title
+    .toLowerCase()
+    .trim()
+    .replace(/[^a-z0-9\s-]/g, "") // remove invalid chars
+    .replace(/\s+/g, "-") // collapse whitespace and replace with -
+    .replace(/-+/g, "-"); // collapse dashes
+}
+
+type EventFormData = z.infer<typeof eventSchema>;
+
+export function EventForm() {
+  const [isOpen, setIsOpen] = useState(false);
+  const [formData, setFormData] = useState<EventFormData | undefined>(
+    undefined
+  );
+  const [titleError, setTitleError] = useState<string | null>(null);
+  
+  const form = useForm({
+    resolver: zodResolver(eventSchema),
+    defaultValues: {
+      title: "",
+      description: "",
+      location: "",
+      date: "",
+      category: undefined,
+      organiser: "",
+      capacity: undefined,
+      eventImageUrl: "",
+    },
+  });
+
+  const { reset } = form;
+
+  const onSubmit = async (data) => {
+    setTitleError(null);
+    const exists = await checkEventTitle(data.title);
+    if (exists) {
+      setTitleError("An event with this title already exists.");
+      return;
+    }
+    setFormData(data);
+    setIsOpen(true);
+  };
+
+  const handleConfirm = async () => {
+    if (!formData) return;
+    try {
+      const slug = generateSlug(formData.title);
+      await createEvent({ ...formData, slug });
+      alert("Event created successfully!");
+      reset();
+    } catch (error) {
+      console.error("Error creating event:", error);
+      alert("Failed to create event");
+    } finally {
+      setIsOpen(false);
+    }
+  };
+
+  return (
+    <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+      {(form.formState.errors.title || titleError) && (
+        <p className="text-red-500">
+          {form.formState.errors.title?.message || titleError}
+        </p>
+      )}
+      <Input type="text" {...form.register("title")} placeholder="Title" />
+      <Textarea {...form.register("description")} placeholder="Description" />
+      <Input
+        type="text"
+        {...form.register("location")}
+        placeholder="Location"
+      />
+      <Input
+  type="datetime-local"
+  {...form.register("date")}
+  placeholder="Date and Time"
+/>
+{form.formState.errors.date && (
+  <p className="text-red-500">{form.formState.errors.date.message}</p>
+)}
+      
+<select
+  id="category"
+  {...form.register("category")}
+  className="block w-full border rounded px-3 py-2"
+  value={form.watch("category") ?? ""}
+>
+  <option value="" disabled>
+    Select a category
+  </option>
+  <option value="cooking">Cooking</option>
+  <option value="coding">Coding</option>
+  <option value="football">Football</option>
+</select>
+{form.formState.errors.category && (
+  <p className="text-red-500">{form.formState.errors.category.message}</p>
+)}
+      <Input
+        type="text"
+        {...form.register("organiser")}
+        placeholder="Organiser"
+      />
+      <Input
+  type="number"
+  min={1}
+  {...form.register("capacity", { valueAsNumber: true })}
+  placeholder="Capacity (optional)"
+/>
+      <Input
+        type="text"
+        {...form.register("eventImageUrl")}
+        placeholder="Event Image URL (optional)"
+      />
+
+      <div className="flex gap-4">
+  <Button type="submit">Create Event</Button>
+  <Button
+    type="button"
+    variant="destructive"
+    className="transition-colors duration-150 hover:bg-red-700 active:bg-red-800"
+    onClick={() => {
+      reset();
+      setTitleError(null);
+    }}
+  >
+    Reset Form
+  </Button>
+</div>
+      <AlertDialog open={isOpen} onOpenChange={setIsOpen}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Confirm Event Creation</AlertDialogTitle>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel onClick={() => setIsOpen(false)}>
+              Cancel
+            </AlertDialogCancel>
+            <AlertDialogAction onClick={handleConfirm}>
+              Confirm
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
+    </form>
+  );
+}
