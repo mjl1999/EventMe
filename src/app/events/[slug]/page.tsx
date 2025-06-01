@@ -37,6 +37,12 @@ export default async function EventPage(props: { params: { slug: string } }) {
   const year = d.getFullYear();
   return `${day}/${month}/${year}`;
 };
+
+function addOneHour(date: Date) {
+  const d = new Date(date);
+  d.setHours(d.getHours() + 1);
+  return d;
+}
 function formatGoogleDate(date: Date) {
   // Converts a JS Date to YYYYMMDDTHHmmssZ (UTC)
   const d = new Date(date);
@@ -46,7 +52,7 @@ function formatGoogleDate(date: Date) {
     .replace(/\.\d{3}Z$/, "Z")
     .slice(0, 15) + "Z";
 }
-const googleCalendarUrl = `https://calendar.google.com/calendar/render?action=TEMPLATE&text=${encodeURIComponent(event.title)}&dates=${formatGoogleDate(event.date)}/${formatGoogleDate(event.date)}&details=${encodeURIComponent(event.description)}&location=${encodeURIComponent(event.location)}`;
+const googleCalendarUrl = `https://calendar.google.com/calendar/render?action=TEMPLATE&text=${encodeURIComponent(event.title)}&dates=${formatGoogleDate(event.date)}/${formatGoogleDate(addOneHour(event.date))}&details=${encodeURIComponent(event.description)}&location=${encodeURIComponent(event.location)}`;
 
   return (
     <main className="max-w-3xl mx-auto px-4 py-10">
