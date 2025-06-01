@@ -3,7 +3,7 @@
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
-import { useState } from "react";
+import { useState, useRef } from "react";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
@@ -23,37 +23,42 @@ const eventSchema = z.object({
   title: z.string().min(1, "Title is required"),
   description: z.string().min(1, "Description is required"),
   location: z
-  .string()
-  .min(1, "Location is required")
-  .regex(
-    /^.+,\s*[A-Z]{1,2}\d{1,2}\s*\d?[A-Z]{0,2}\s*\d[A-Z]{2}$/i,
-    "Location must be in the format: Place Name, POSTCODE"
-  ),
-  date: z.string()
-  .min(1, "Date is required")
-  .refine(
-    (val) => !isNaN(Date.parse(val)),
-    { message: "Invalid date and time" }
-  )
-  .refine(
-    (val) => Date.parse(val) > Date.now(),
-    { message: "Date and time must be in the future" }
-  ),
+    .string()
+    .min(1, "Location is required")
+    .regex(
+      /^.+,\s*[A-Z]{1,2}\d{1,2}\s*\d?[A-Z]{0,2}\s*\d[A-Z]{2}$/i,
+      "Location must be in the format: Place Name, POSTCODE"
+    ),
+  date: z
+    .string()
+    .min(1, "Date is required")
+    .refine((val) => !isNaN(Date.parse(val)), {
+      message: "Invalid date and time",
+    })
+    .refine((val) => Date.parse(val) > Date.now(), {
+      message: "Date and time must be in the future",
+    }),
   category: z.enum(["cooking", "coding", "football"], {
-    errorMap: () => ({ message: "Category must be cooking, coding, or football" }),
+    errorMap: () => ({
+      message: "Category must be cooking, coding, or football",
+    }),
   }),
   organiser: z.string().min(1, "Organiser is required"),
- capacity: z.preprocess(
-  (val) =>
-    val === "" ||
-    val === null ||
-    typeof val === "undefined" ||
-    (typeof val === "number" && isNaN(val))
-      ? undefined
-      : Number(val),
-  z.number().min(1, "Capacity must be at least 1").optional()
-),
-  eventImageUrl: z.string().url("Invalid URL").or(z.literal("")).optional(),
+  capacity: z.preprocess(
+    (val) =>
+      val === "" ||
+      val === null ||
+      typeof val === "undefined" ||
+      (typeof val === "number" && isNaN(val))
+        ? undefined
+        : Number(val),
+    z.number().min(1, "Capacity must be at least 1").optional()
+  ),
+  eventImageUrl: z
+    .string()
+  .url("Invalid URL")
+  .or(z.literal("")) // allow empty string for optional
+  .optional(),
 });
 
 function generateSlug(title: string) {
@@ -74,6 +79,7 @@ export function EventForm() {
   );
   const [titleError, setTitleError] = useState<string | null>(null);
   
+
   const form = useForm({
     resolver: zodResolver(eventSchema),
     defaultValues: {
@@ -124,80 +130,88 @@ export function EventForm() {
         </p>
       )}
       <Input type="text" {...form.register("title")} placeholder="Title" />
-     <Textarea
-  {...form.register("description")}
-  placeholder="Description"
-  className="h-32 resize-none overflow-y-auto"
-  maxLength={2000}
-  
-/>
-<p className="text-sm text-gray-500">
-  {form.watch("description")?.length || 0}/2000 characters
-</p>
+      <Textarea
+        {...form.register("description")}
+        placeholder="Description"
+        className="h-32 resize-none overflow-y-auto"
+        maxLength={2000}
+      />
+      <p className="text-sm text-gray-500">
+        {form.watch("description")?.length || 0}/2000 characters
+      </p>
       <Input
-  type="text"
-  {...form.register("location")}
-  placeholder="e.g. Coventry Central Library, CV1 1FY"
-/>
-{form.formState.errors.location && (
-  <p className="text-red-500">{form.formState.errors.location.message}</p>
-)}
+        type="text"
+        {...form.register("location")}
+        placeholder="e.g. Coventry Central Library, CV1 1FY"
+      />
+      {form.formState.errors.location && (
+        <p className="text-red-500">{form.formState.errors.location.message}</p>
+      )}
       <Input
-  type="datetime-local"
-  {...form.register("date")}
-  placeholder="Date and Time"
-/>
-{form.formState.errors.date && (
-  <p className="text-red-500">{form.formState.errors.date.message}</p>
-)}
-      
-<select
-  id="category"
-  {...form.register("category")}
-  className="block w-full border rounded px-3 py-2"
-  value={form.watch("category") ?? ""}
->
-  <option value="" disabled>
-    Select a category
-  </option>
-  <option value="cooking">Cooking</option>
-  <option value="coding">Coding</option>
-  <option value="football">Football</option>
-</select>
-{form.formState.errors.category && (
-  <p className="text-red-500">{form.formState.errors.category.message}</p>
-)}
+        type="datetime-local"
+        {...form.register("date")}
+        placeholder="Date and Time"
+      />
+      {form.formState.errors.date && (
+        <p className="text-red-500">{form.formState.errors.date.message}</p>
+      )}
+
+      <select
+        id="category"
+        {...form.register("category")}
+        className="block w-full border rounded px-3 py-2"
+        value={form.watch("category") ?? ""}
+      >
+        <option value="" disabled>
+          Select a category
+        </option>
+        <option value="cooking">Cooking</option>
+        <option value="coding">Coding</option>
+        <option value="football">Football</option>
+      </select>
+      {form.formState.errors.category && (
+        <p className="text-red-500">{form.formState.errors.category.message}</p>
+      )}
       <Input
         type="text"
         {...form.register("organiser")}
         placeholder="Organiser"
       />
       <Input
-  type="number"
-  min={1}
-  {...form.register("capacity", { valueAsNumber: true })}
-  placeholder="Capacity (optional)"
-/>
-      <Input
-        type="text"
-        {...form.register("eventImageUrl")}
-        placeholder="Event Image URL (optional)"
+        type="number"
+        min={1}
+        {...form.register("capacity", { valueAsNumber: true })}
+        placeholder="Capacity (optional)"
       />
+      <div>
+       
+        
+        <Input
+  type="text"
+  {...form.register("eventImageUrl")}
+  placeholder="Event Image URL (optional)"
+/>
+{form.formState.errors.eventImageUrl && (
+  <p className="text-red-500">
+    {form.formState.errors.eventImageUrl.message}
+  </p>
+)}
+      </div>
 
       <div className="flex gap-4">
-  <Button type="submit">Create Event</Button>
-  <Button
-    type="button"
-    variant="destructive"
-    className="transition-colors duration-150 hover:bg-red-700 active:bg-red-800"
-    onClick={() => {
-      reset();
-      setTitleError(null);
-    }}
-  >
-    Reset Form
-  </Button>
-</div>
+        <Button type="submit">Create Event</Button>
+        <Button
+          type="button"
+          variant="destructive"
+          className="transition-colors duration-150 hover:bg-red-700 active:bg-red-800"
+          onClick={() => {
+            reset();
+            setTitleError(null);
+          }}
+        >
+          Reset Form
+        </Button>
+      </div>
       <AlertDialog open={isOpen} onOpenChange={setIsOpen}>
         <AlertDialogContent>
           <AlertDialogHeader>
