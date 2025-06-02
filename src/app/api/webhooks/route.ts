@@ -13,14 +13,15 @@ export async function POST(req: NextRequest) {
     console.log(
       `Received webhook with ID ${id} and event type of ${eventType}`
     );
-    console.log("Webhook payload:", evt.data);
 
     if (evt.type === "user.created") {
       const { id, email_addresses, first_name, last_name, username } = evt.data;
       try {
-        const newUser = await prisma.user.create({
-          data: {
-            id: id,
+        const newUser = await prisma.user.upsert({
+          where: { id },
+          update: {},
+          create: {
+            id,
             username: username || "",
             email: email_addresses[0]?.email_address || "",
             firstName: first_name || null,
@@ -29,7 +30,7 @@ export async function POST(req: NextRequest) {
         });
         return new Response(JSON.stringify(newUser), { status: 200 });
       } catch (err) {
-        console.error("Error creating user in database:", err);
+        // Optionally log err.message only
         return new Response("Error creating user", { status: 500 });
       }
     }
