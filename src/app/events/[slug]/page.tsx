@@ -10,14 +10,13 @@ import EventImage from "@/components/EventImage";
 import DeleteEvent from "@/components/DeleteEvent";
 
 
-interface EventPageProps {
-  params: {
-    slug: string;
-  };
-}
 
-export default async function EventPage({ params }: EventPageProps) {
-  const { slug } = params;
+export default async function EventPage({
+  params,
+}: {
+  params: Promise<{ slug: string }>;
+}) {
+  const { slug } = await params;
   const user = await getCurrentUser();
 
   if (!user) {
