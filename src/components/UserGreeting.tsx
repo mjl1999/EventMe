@@ -1,16 +1,15 @@
-"use client";
 
-import { useUser } from "@clerk/nextjs";
+import { getCurrentUser } from "@/db/getCurrentUser";
 
-export default function UserGreeting() {
-  const { isSignedIn, user } = useUser();
+export default async function UserGreeting() {
+   const user = await getCurrentUser();
 
-  if (!isSignedIn) return null;
+  if (!user) return null;
 
   const name =
     user?.firstName ||
     user?.username ||
-    user?.emailAddresses?.[0]?.emailAddress ||
+    user?.email ||
     "User";
 
   return (
