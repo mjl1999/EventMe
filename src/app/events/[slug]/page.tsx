@@ -9,8 +9,15 @@ import { prisma } from "@/db/db";
 import EventImage from "@/components/EventImage";
 import DeleteEvent from "@/components/DeleteEvent";
 
-export default async function EventPage(props: { params: { slug: string } }) {
-  const { slug } = props.params;
+
+interface EventPageProps {
+  params: {
+    slug: string;
+  };
+}
+
+export default async function EventPage({ params }: EventPageProps) {
+  const { slug } = params;
   const user = await getCurrentUser();
 
   if (!user) {
