@@ -3,7 +3,7 @@
 database.bak
 mydumpfile.bak
 .env
-prisma/migrations/
+
 # dependencies
 /node_modules
 /.pnp
