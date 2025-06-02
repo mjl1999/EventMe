@@ -3,14 +3,19 @@ import { redirect, notFound } from "next/navigation";
 import {prisma} from "@/db/db";
 import UpdateEventFormWrapper from "@/components/UpdateEventWrapper";
 
-export default async function UpdateEventPage({ params }: { params: { slug: string } }) {
+export default async function UpdateEventPage({
+  params,
+}: {
+  params: Promise<{ slug: string }>;
+}) {
+  const { slug } = await params;
   const user = await getCurrentUser();
 
   if (!user || !user.isStaff) {
     redirect("/");
   }
 
-  const { slug } = params;
+  
   const event = await prisma.event.findUnique({
       where: { slug },
     });
