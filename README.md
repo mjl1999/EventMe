@@ -126,4 +126,4 @@ Event-Me uses a **Google Calendar URL** to allow users to add events to their pe
 
 ## Conclusion
 
-Event-Me is a comprehensive platform that streamlines the process of event management for both users and staff members. With its modern tech stack, responsive design, and intuitive features, it addresses the needs of community members and organizers alike.
+Event-Me is a comprehensive platform that streamlines the process of event management for both users and staff members. With its modern tech stack, responsive design, and intuitive features, it addresses the needs of community members and organizers alike!
