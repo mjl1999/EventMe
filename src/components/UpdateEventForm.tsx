@@ -90,10 +90,20 @@ export function UpdateEventForm({ event }: { event: any }) {
     eventImageUrl: event.eventImageUrl || "",
   };
 
-  const form = useForm<EventFormData>({
-    resolver: zodResolver(eventSchema),
-    defaultValues,
-  });
+  const form = useForm({
+      resolver: zodResolver(eventSchema),
+      defaultValues: {
+        title: "",
+        description: "",
+        location: "",
+        date: "",
+        category: undefined,
+        organiser: "",
+        capacity: undefined,
+        eventImageUrl: "",
+      },
+    });
+  
 
   const { reset } = form;
 
