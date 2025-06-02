@@ -10,7 +10,7 @@ import EventImage from "@/components/EventImage";
 import DeleteEvent from "@/components/DeleteEvent";
 
 export default async function EventPage(props: { params: { slug: string } }) {
-  const { slug } = await props.params;
+  const { slug } = props.params;
   const user = await getCurrentUser();
 
   if (!user) {
