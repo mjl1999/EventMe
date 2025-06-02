@@ -96,7 +96,7 @@ export function EventForm() {
 
   const { reset } = form;
 
-  const onSubmit = async (data) => {
+  const onSubmit = async (data: EventFormData) => {
     setTitleError(null);
     const exists = await checkEventTitle(data.title);
     if (exists) {
