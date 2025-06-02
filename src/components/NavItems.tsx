@@ -1,5 +1,8 @@
+"use client";
 import Link from "next/link";
 import React from "react";
+import { usePathname } from "next/navigation"; // Import the hook
+
 
 export const headerLinks = [
   {
@@ -30,6 +33,8 @@ const NavItems = ({
 }) => {
   const isMobile = variant === "mobile";
 
+  const pathname = usePathname();
+
   const classNames = isMobile
     ? "flex flex-col items-start gap-4"
     : "hidden md:flex absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 gap-5 z-0";
@@ -41,7 +46,9 @@ const NavItems = ({
         .map((link) => (
           <li
             key={link.route}
-            className="text-gray-900 flex items-center justify-center p-medium-16 whitespace-nowrap"
+            className={`text-gray-900 flex items-center justify-center p-medium-16 whitespace-nowrap ${
+              pathname === link.route ? " text-purple-700 rounded-md" : ""
+            }`}
           >
             <Link href={link.route}>{link.label}</Link>
           </li>

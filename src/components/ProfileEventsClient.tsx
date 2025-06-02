@@ -100,11 +100,12 @@ export default function ProfileEventsClient({ events }: { events: any[] }) {
                   size="lg"
                   className="button px-4 transition duration-150 ease-in-out hover:scale-105 active:scale-95 hover:bg-red-600 hover:text-white focus:ring-2 focus:ring-red-400"
                   onClick={async () => {
+                    setPending((prev) => ({ ...prev, [event.id]: true }));
                     await removeSignup(event.id);
-                    // Optionally: refresh the page or remove the event from the UI here
+                    setPending((prev) => ({ ...prev, [event.id]: false }));
                   }}
                 >
-                  Remove
+                  {pending[event.id] ? "Removing..." : "Remove"}
                 </Button>
               </div>
             </div>
