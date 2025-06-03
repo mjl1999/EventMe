@@ -33,7 +33,7 @@ async function main() {
       },
     });
   }
-  console.log("Seeded all events!");
+  // console.log("Seeded all events!");
 }
 
 main()
